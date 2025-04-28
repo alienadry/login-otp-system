@@ -1,25 +1,29 @@
 <?php 
+session_start();
 require_once('../config/database.php');
+
 
 if (isset($_POST['login'])){
     try{
-        $key = $_POST['key'];
-        $loginPass = $_POST['password'];
+        $key = trim(htmlspecialchars($_POST['key']));
+        $loginPass = trim(htmlspecialchars($_POST['password']));
 
-        $query = "SELECT * FROM `users` WHERE (username = :key OR email = :key OR mobile = :key) AND (password = ?);";
+        $query = "SELECT * FROM `users` WHERE (username = :key OR email = :key OR mobile = :key) AND (password = :password);";
 
         // stmt
         $stmt = $conn-> prepare($query);
 
         $stmt->bindValue(':key',$key);
-        $stmt->bindValue(1,$loginPass);
+        $stmt->bindValue(':password',$loginPass);
 
         $stmt->execute();
         
         if($user = $stmt->fetch(PDO::FETCH_ASSOC)){
-         echo "hello".$user['username']."wellcome";
+        $_SESSION['login success'] = "hello ".$user['username']." wellcome";
+        header('location: ../index.php');
         }else{
-            echo "user not found";
+            $_SESSION['login fail'] = "login failed";
+            header('location: ../index.php');
         }
 
     }catch(Exception $e){

@@ -208,3 +208,7 @@ body{
 .container.active .toggle-right{
     transform: translateX(200%);
 }
+.alert{
+    width: 100%;
+    margin: 10px;
+}
