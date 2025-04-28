@@ -34,15 +34,15 @@ require_once('./config/loader.php');
 
     <!-- signin -->
     <div class="form-container sign-in">
-      <form>
+      <form method="post" action="/actions/login.php">
         <h1>Sign In</h1>
  <br>
             <span>or use your email/password</span>
-            <input type="text" placeholder="Mobile / Username / Password">
-            <input type="password" placeholder="Password">
+            <input type="text" name="key" placeholder="Mobile / Username / Email">
+            <input type="password" name="password" placeholder="Password">
             <a href="#">Forget your Password?</a>
             <div style="display: inline;">
-                <button>Sign In</button>
+                <button type="submit" name="login"> Sign In</button>
                 <a style="margin-left: 15px" href="otp.php">Send OTP</a>        
             </div>
       </form>
