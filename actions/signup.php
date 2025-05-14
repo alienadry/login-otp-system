@@ -1,6 +1,5 @@
 <?php 
-require_once('../config/database.php');
-
+require_once('../config/loader.php');
 if (isset($_POST['signup'])){
   try {
     $username = $_POST['username'];

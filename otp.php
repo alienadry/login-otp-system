@@ -1,3 +1,43 @@
+<?php
+require_once('../config/loader.php');
+session_start();
+
+if (isset($_POST['otpsubmit'])){
+  try{
+      $mobileNum = trim(htmlspecialchars($_POST['otpInput']));
+
+      $query = "SELECT * FROM `users` WHERE mobile = ?";
+
+      // stmt
+      $stmt = $conn-> prepare($query);
+
+      $stmt->bindValue(1 ,$mobileNum);
+
+      $stmt->execute();
+      
+      $hasUser = $stmt->rowCount();
+      if($hasUser>0 AND isset($_POST['otpsubmit'])){
+        $otp = rand(1000,9999);
+        //its just a sample here, do it with your sms panel document:)
+        $api = "api from your sms panel here" .$otp. ";@&to".$_POST['otpInput'];
+        $sms = file_get_contents($api);
+
+        $updateQuery = "UPDATE `users` SET otp=? WHERE mobile=?";
+        $stmt = $conn->prepare($updateQuery);
+        $stmt->bindValue(1,$otp);
+        $stmt->bindValue(2,$mobileNum);
+        $stmt->execute();
+      }else{
+        $_SESSION['login_fail'] = "شماره موبایل وارد شده در سیستم یافت نشد.";
+        echo "<div class='alert alert-danger'>{$_SESSION['login_fail']}</div>";
+        unset($_SESSION['login_fail']);
+      }
+
+  }catch(Exception $e){
+    echo "eror message is". $e->getMessage();
+  }
+}
+?>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -21,14 +61,14 @@
       </form>
     </div>
     <div class="form-container sign-in">
-      <form>
+      <form method="post">
         <h1>OTP</h1>
         <br>
-        <input type="number" placeholder="enter your OTP">
+        <input type="number" name="otpInput" placeholder="enter your mobile/email">
         <br>
         <a href="#">Forget your Password?</a>
         <div style="display: inline;">
-            <button>Send To MObile</button>
+            <button type="submit" name="otpsubmit">Send To MObile</button>
             <a style="margin-left: 15px" href="otp.php">To Email</a>        
         </div>
       </form>
