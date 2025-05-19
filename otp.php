@@ -1,5 +1,5 @@
 <?php
-require_once('../config/loader.php');
+require_once('config/loader.php');
 session_start();
 
 if (isset($_POST['otpsubmit'])){
